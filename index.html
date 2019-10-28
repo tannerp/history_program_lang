@@ -107,8 +107,8 @@
     });
 
 
-  edges = [];
-  G3.addEdgesFrom(edges);
+  // edges = [["B", "C"]];
+  // G3.addEdgesFrom(edges);
 
 
   // var color = d3.scale.category20();
@@ -153,13 +153,14 @@
     lan_desc_el.innerHTML = `
     <li> Year: ${lang.data.Lang_Year}</li>
     <li> Creator: ${lang.data.Company_People_implemented_language}</li>
+    <li> Predecessor: ${lang.data.Predecessor}</li>
     <br><br>
     <li>Characteristics: ${lang.data.Characteristics}</li>
     <br>
     <li>Contribution: ${lang.data.Contribution_of_Language}</li>
     <br>
     <li>Comment: ${lang.data.Comment_on_Language}</li>
-    <li>Website: ${lang.data.Website}</li>`
+    <li>Website:<a src="${lang.data.Website}"</a></li>`
 
     document.getElementById("lang_title").innerText = lang.data.Language;
 

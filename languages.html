@@ -26,28 +26,42 @@
   <script src="https://d3js.org/d3.v3.js"></script>
 
   <script src="./jsnetworkx.js"></script>
+  <script src="./db.js"></script>
 
 
 </head>
 
 <body>
   <!-- <script src="js/scripts.js"></script> -->
-  <h1> Network Graph of Program Languages</h1>
+  <h1> Network Graph of Programming Languages</h1>
 
   <div id="chart3"></div>
 
   <div id='slider' class="slider close">
     <h3 id='lang_title'></h3>
+    <ul id='lang_desc'> </ul>
+    <ul id='lang_cmt'> </ul>
   </div>
 </body>
 
 <style>
+  ul {
+    columns: 2;
+    list-style-type:none;
+  }
+  #lang_desc {
+    /* background: gray; */
+    width: 100%;
+    height: 100%;
+    float: right;
+  }
   h1 {
     text-align: center;
     color: orange;
   }
 
   .slider {
+    padding: 15px;
     background-color: orange;
     position: absolute;
     width: 100vw;
@@ -55,9 +69,11 @@
     height: 20vh;
     overflow: hidden;
     transition: all 1s;
+    color: white;
   }
 
   .slider.close {
+    background: gray;
     bottom: 0;
     height: 0;
     transition: all 1s;
@@ -66,6 +82,7 @@
   body {
     font-family: Helvetica;
     padding-top: 3%;
+    background: gray;
   }
 
   #chart3,
@@ -74,130 +91,24 @@
     margin-right: auto;
     width: 90vw;
     height: 70vh;
-    background-color: white;
+    background-color: gray;
   }
 </style>
 <script>
   let selct_lang;
   var G3 = new jsnx.DiGraph();
 
-  // patients are green
-  G3.addNodesFrom([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], {
-    group: 0,
-    color: 'orange'
-  });
   // symptoms are red
   G3.addNodesFrom(
-    [
-      [21, {
-        name: "dry mouth"
-      }],
-      [22, {
-        name: "dry lips "
-      }],
-      [23, {
-        name: "dry nose"
-      }],
-      [24, {
-        name: "dry skin"
-      }],
-      [25, {
-        name: "brittle nails"
-      }],
-      [26, {
-        name: "pruritus"
-      }],
-      [27, {
-        name: "hair loss"
-      }],
-      [28, {
-        name: "depression"
-      }],
-      [29, {
-        name: "dry eyes"
-      }],
-      [30, {
-        name: "fatigue"
-      }],
-      [31, {
-        name: "hypertriglyceridemia"
-      }],
-      [32, {
-        name: "vertigo"
-      }],
-      [33, {
-        name: "GI upset"
-      }],
-      [34, {
-        name: "facial redness"
-      }],
-      [35, {
-        name: "weight loss"
-      }]
-    ], {
+    Object.entries(db), {
       group: 0,
-      // size: 40,
-      // color: 'orange'
+      size: 40,
+      color: 'orange'
     });
 
 
   edges = [];
-  edges.push([
-    [1, 23],
-    [1, 25],
-    [1, 21],
-    [1, 25],
-    [2, 30],
-    [2, 22],
-    [2, 21],
-    [3, 21],
-    [4, 21],
-    [4, 27],
-    [5, 31],
-    [5, 28],
-    [5, 32],
-    [5, 29],
-    [5, 22],
-    [5, 25],
-    [6, 24],
-    [6, 33],
-    [7, 22],
-    [7, 24],
-    [7, 26],
-    [8, 34],
-    [8, 35],
-    [9, 24],
-    [9, 22],
-    [9, 25],
-    [10, 26],
-    [11, 22],
-    [11, 25],
-    [12, 26],
-    [13, 27],
-    [13, 22],
-    [13, 23],
-    [13, 25],
-    [14, 27],
-    [14, 28],
-    [14, 23],
-    [15, 22],
-    [15, 27],
-    [16, 22],
-    [16, 26],
-    [17, 22],
-    [17, 27],
-    [17, 25],
-    [18, 22],
-    [18, 29],
-    [19, 22],
-    [20, 25],
-    [20, 22],
-    [20, 21]
-  ]);
-
-
-
-  G3.addEdgesFrom(edges[0]);
+  G3.addEdgesFrom(edges);
 
 
   // var color = d3.scale.category20();
@@ -205,52 +116,53 @@
   jsnx.draw(G3, {
     element: '#chart3',
     withLabels: true,
-    labels: "name",
+    labels: "Language",
     layout_attr: {
       charge: -150,
       linkDistance: 50
     },
     labelStyle: {
-      fill: 'black'
+      fill: 'white'
     },
     nodeStyle: {
       fill: function (d) {
         return d.data.color;
-      }
+      },
     },
     node_attr: {
       r: 30,
       title: function (d) {
-        return d.name;
+        return d.data.Language;
       },
       id: function (d) {
         return 'node-' + d.node;
       }
     },
-    // node_style: {
-    //   fill: function (d) {
-    //     return "orange"
-    //     // console.log(d.data.color);
-    //     // return d.data.color;
-    //   },
-    //   stroke: 'orange'
-    // },
-    // edge_style: {
-    //   color: "orange",
-    //   stroke: '#febb2f'
-    // }
+
   }, true);
 
 
   function update_select_lang(lang){
-
+    console.log(lang)
     let el = document.getElementById("slider");
+
+    let lan_desc_el = document.getElementById("lang_desc");
+    let cmt_el = document.getElementById("lang_cmt");
     
-    el.classList.remove("close")
-    
-    document.getElementById("lang_title").innerText = lang.data.name
-    console.log(lang.data.name)
-    console.log(document.getElementById("lang_title"))
+    el.classList.remove("close");
+    lan_desc_el.innerHTML = `
+    <li> Year: ${lang.data.Lang_Year}</li>
+    <li> Creator: ${lang.data.Company_People_implemented_language}</li>
+    <br><br>
+    <li>Characteristics: ${lang.data.Characteristics}</li>
+    <br>
+    <li>Contribution: ${lang.data.Contribution_of_Language}</li>
+    <br>
+    <li>Comment: ${lang.data.Comment_on_Language}</li>
+    <li>Website: ${lang.data.Website}</li>`
+
+    document.getElementById("lang_title").innerText = lang.data.Language;
+
   }
 
   function highlight_nodes(nodes, on) {
@@ -263,17 +175,13 @@
 
   d3.selectAll('.node').on('click', function (d) {
     highlight_nodes(d.G.neighbors(d.node).concat(d.node), true);
-
     update_select_lang(d);
-
-    // console.log(d)
   });
 
-  // d3.selectAll('.node').on('mouseout', function (d) {
-  //   highlight_nodes(d.G.neighbors(d.node).concat(d.node), false);
-  // });
+  function loadDB(){
+    
+  }
 
-  // });
 </script>
 
 </html>
